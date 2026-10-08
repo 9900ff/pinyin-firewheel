@@ -1,0 +1,462 @@
+/* Shared table surface: gameplay information reads from either side. */
+.table-game {
+  --heat: 0.1;
+  --pulse: 0;
+  max-width: 860px;
+  padding: calc(12px + env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+    calc(12px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.table-ambience {
+  position: fixed;
+  inset: -8%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 18% 30%,
+      hsla(calc(30 - var(--mechanical) * 12 - var(--alarm) * 14), 92%, 47%, 0.78),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse at 82% 65%,
+      hsla(calc(24 - var(--mechanical) * 10 - var(--alarm) * 12), 90%, 40%, 0.68),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse at 48% 86%,
+      hsla(12, 80%, 25%, calc(0.12 + var(--alarm) * 0.2)),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at center,
+      hsla(calc(28 - var(--alarm) * 24), 90%, 40%, 0.42),
+      hsla(8, 85%, 24%, 0.22)
+    );
+  filter: blur(clamp(20px, 5vw, 46px));
+  opacity: calc(0.13 + var(--heat) * 0.1 + var(--pulse) * 0.62);
+  transform: translate(calc(var(--pulse) * 12px), calc(var(--pulse) * -8px))
+    scale(calc(1 + var(--pulse) * 0.1 + var(--mechanical) * 0.025));
+  will-change: transform;
+}
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  gap: 10px;
+}
+.table-toolbar .icon-button {
+  background: #1a1b15de;
+}
+.table-counter {
+  font-size: 11px;
+  color: #d3c7a7;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.table-counter b {
+  font-variant-numeric: tabular-nums;
+  background: #171b13d9;
+  border: 1px solid #656044;
+  border-radius: 20px;
+  padding: 7px 12px;
+  color: #f6db89;
+  font-size: 13px;
+}
+.table-board {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 8px auto;
+}
+.card-wheel {
+  width: 100%;
+  max-width: 680px;
+  aspect-ratio: 1;
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 50%;
+  --card-width: clamp(42px, 11.5vw, 72px);
+  background: radial-gradient(circle, #181a15ed 18%, #27251ac9 38%, #28241980 64%, transparent 71%);
+  box-shadow: inset 0 0 calc(24px + var(--pulse) * 45px)
+    hsla(calc(30 - var(--heat) * 28), 100%, 55%, calc(0.05 + var(--pulse) * 0.23));
+  container-type: inline-size;
+}
+.card-track {
+  position: absolute;
+  inset: 7%;
+  border: 1px solid #d4a44935;
+  border-radius: 50%;
+  pointer-events: none;
+}
+/* Arc-shaped hit regions avoid overlapping rectangular buttons around a tight ring. */
+.ring-cards {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ring-card {
+  transform: rotate(var(--angle));
+  transform-origin: 50px 50px;
+  transition: transform 160ms ease-out;
+  cursor: pointer;
+  touch-action: manipulation;
+  outline: none;
+}
+.ring-card path {
+  fill: #edb961;
+  stroke: #ffe1a0;
+  stroke-width: 0.25;
+  transition: fill 80ms;
+}
+.ring-card:nth-child(3n) path {
+  fill: #ded4b8;
+  stroke: #fff2d0;
+}
+.ring-card text {
+  fill: #282819;
+  font-size: 6px;
+  font-weight: 850;
+  font-family: inherit;
+  text-decoration: underline;
+  text-underline-offset: 1px;
+  pointer-events: none;
+}
+.ring-card:active path,
+.ring-card:focus-visible path {
+  fill: #fff6ce;
+  stroke: #fff;
+  stroke-width: 0.8;
+}
+.ring-card[aria-disabled='true'] {
+  cursor: default;
+}
+.arc-wheel .table-center {
+  width: 54%;
+}
+.arc-wheel .card-track {
+  inset: 1%;
+  border-color: #edb96144;
+}
+.table-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ffe9af;
+  background: radial-gradient(circle, #3d2819, #201d15);
+  box-shadow: 0 0 calc(15px + var(--pulse) * 42px)
+    hsla(calc(35 - var(--heat) * 32), 100%, 55%, calc(0.2 + var(--pulse) * 0.55));
+  pointer-events: none;
+}
+.turn-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+.turn-ring circle {
+  fill: none;
+  stroke-width: 1.8;
+}
+.turn-ring-track {
+  stroke: #645c3d;
+}
+.turn-ring-value {
+  stroke: #e2f79c;
+  stroke-linecap: round;
+}
+.table-face {
+  position: relative;
+  width: 82%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.table-face.opposite {
+  transform: rotate(180deg);
+}
+.table-topic {
+  font-size: clamp(9px, 2.6vw, 17px);
+  font-weight: 750;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.turn-seconds {
+  font-size: clamp(23px, 7vw, 47px);
+  line-height: 1;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: #f4ffcf;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin: 1px 0;
+}
+.turn-seconds small {
+  font-size: clamp(7px, 1.8vw, 12px);
+  font-weight: 500;
+}
+.turn-caption {
+  font-size: clamp(7px, 1.9vw, 11px);
+  line-height: 1.1;
+  color: #b6bc99;
+}
+.center-fuse {
+  color: #ffb454;
+  font-size: clamp(10px, 2.5vw, 18px);
+  line-height: 1;
+  margin: 1px 0;
+  text-shadow: 0 0 12px #ff9624;
+  transform: scale(calc(0.8 + var(--pulse) * 0.5));
+}
+.countdown-urgent .turn-ring-value {
+  stroke: #ff9464;
+}
+.countdown-urgent .turn-seconds {
+  color: #ffb08b;
+}
+.table-notice {
+  min-height: 32px;
+  width: max-content;
+  max-width: 96%;
+  padding: 7px 12px;
+  color: #d1dcae;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+  pointer-events: none;
+  border-radius: 9px;
+}
+.notice-opposite {
+  transform: rotate(180deg);
+}
+.table-notice.penalty {
+  color: #ffe7c8;
+  background: #993f24e8;
+  box-shadow: 0 0 20px #ef753f33;
+  font-weight: 700;
+}
+.table-footer {
+  text-align: center;
+  color: #d0ccb7;
+  font-size: 11px;
+  padding: 5px 0;
+}
+.table-footer span {
+  display: block;
+  color: #9e9d81;
+  font-size: 10px;
+  margin-top: 7px;
+}
+.round-ended .table-ambience {
+  opacity: 0.5;
+}
+@media (min-width: 700px) {
+  .table-board {
+    margin: 12px auto;
+  }
+  .table-notice {
+    font-size: 14px;
+    min-height: 38px;
+  }
+  .table-counter,
+  .table-footer {
+    font-size: 14px;
+  }
+  .table-game .icon-button {
+    width: 50px;
+    height: 50px;
+  }
+}
+@media (max-width: 359px) {
+  .card-wheel {
+    --card-width: 38px;
+  }
+  .table-center {
+    width: 33%;
+  }
+  .table-topic {
+    font-size: 8px;
+  }
+  .turn-seconds {
+    font-size: 21px;
+  }
+  .turn-caption {
+    font-size: 6px;
+  }
+  .card-letter {
+    font-size: 15px;
+  }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .table-game {
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: minmax(100px, 1fr) auto minmax(100px, 1fr);
+    align-items: center;
+    column-gap: 8px;
+  }
+  .table-toolbar {
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 4px;
+  }
+  .table-counter {
+    flex-direction: column;
+    gap: 5px;
+  }
+  .table-board {
+    width: calc(100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-width: 304px;
+    margin: 0;
+    position: relative;
+  }
+  .card-wheel {
+    --card-width: clamp(36px, 11svh, 58px);
+  }
+  .table-notice {
+    position: absolute;
+    right: calc(100% + 8px);
+    bottom: 0;
+    width: 110px;
+    max-width: none;
+    font-size: 9px;
+  }
+  .notice-opposite {
+    right: auto;
+    left: calc(100% + 8px);
+    top: 0;
+    bottom: auto;
+  }
+  .table-footer {
+    font-size: 10px;
+    padding: 0 5px;
+  }
+  .table-footer span {
+    font-size: 9px;
+  }
+  .table-topic {
+    font-size: clamp(8px, 2.7svh, 13px);
+  }
+  .turn-seconds {
+    font-size: clamp(21px, 7svh, 34px);
+  }
+  .turn-caption {
+    font-size: clamp(6px, 1.9svh, 9px);
+  }
+  .center-fuse {
+    font-size: 10px;
+  }
+  .card-letter {
+    font-size: clamp(15px, 4.5svh, 24px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .table-ambience::after {
+    box-shadow: none;
+  }
+  .card-wheel {
+    box-shadow: inset 0 0 30px #ffc75b18;
+  }
+  .table-ambience {
+    opacity: calc(0.35 + var(--heat) * 0.4);
+  }
+  .center-fuse {
+    transform: none;
+  }
+  .table-center {
+    box-shadow: 0 0 16px #e9973455;
+  }
+}
+
+/* Shake the complete board once, including its center and particles. */
+.card-wheel {
+  transform: translate(var(--shake-x, 0px), var(--shake-y, 0px)) rotate(var(--shake-angle, 0deg));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.countdown-urgent .turn-seconds {
+  transform: scale(1.12);
+}
+.turn-seconds {
+  transition: transform 120ms ease-out;
+}
+.countdown-urgent .turn-ring-value {
+  stroke-width: 2.8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-wheel {
+    transform: none;
+    will-change: auto;
+  }
+  .countdown-urgent .turn-seconds {
+    transform: none;
+  }
+}
+
+/* Low-contrast fog receives every beat; only small, unblurred late sparks provide sharp highlights. */
+.table-game {
+  overflow: clip;
+}
+.card-wheel {
+  box-shadow: inset 0 0 38px hsla(22, 80%, 35%, calc(0.06 + var(--pulse) * 0.025));
+}
+.table-center {
+  box-shadow: 0 0 24px hsla(22, 85%, 40%, calc(0.1 + var(--pulse) * 0.04));
+}
+.center-fuse {
+  text-shadow: 0 0 7px #a35c26;
+  transform: scale(calc(0.96 + var(--pulse) * 0.06));
+}
+.spark-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  filter: none;
+  overflow: visible;
+}
+@media (prefers-reduced-motion: reduce) {
+  .table-ambience {
+    transform: none;
+    opacity: 0.55;
+    will-change: auto;
+  }
+  .spark-layer {
+    display: none;
+  }
+  .center-fuse {
+    transform: none;
+  }
+  .table-center {
+    box-shadow: 0 0 20px #9d5e2526;
+  }
+  .card-wheel {
+    box-shadow: inset 0 0 30px #a7793210;
+  }
+}
