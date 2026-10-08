@@ -11,6 +11,14 @@ export const DEFAULT_SETTINGS: Settings = {
   sound: true,
   vibration: true,
 };
+export const THINKING_RANGE = { min: 1, max: 300 };
+export const TIMEOUT_RANGE = { min: 0, max: 99 };
+export function isThinkingTime(n: number) {
+  return Number.isInteger(n) && n >= THINKING_RANGE.min && n <= THINKING_RANGE.max;
+}
+export function isTimeoutLimit(n: number) {
+  return Number.isInteger(n) && n >= TIMEOUT_RANGE.min && n <= TIMEOUT_RANGE.max;
+}
 export function isSettings(v: unknown): v is Settings {
   if (!v || typeof v !== 'object') return false;
   const s = v as Settings;
@@ -22,8 +30,8 @@ export function isSettings(v: unknown): v is Settings {
     s.bombMax >= 30 &&
     s.bombMax <= 300 &&
     s.bombMax > s.bombMin &&
-    [5, 8, 10, 15].includes(s.thinking) &&
-    [0, 1, 3, 5].includes(s.timeoutLimit) &&
+    isThinkingTime(s.thinking) &&
+    isTimeoutLimit(s.timeoutLimit) &&
     ['easy', 'standard', 'hard'].includes(s.difficulty) &&
     Array.isArray(s.topicBanks) &&
     s.topicBanks.length > 0 &&

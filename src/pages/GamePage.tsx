@@ -1,5 +1,6 @@
+import { FullscreenButton } from '../components/FullscreenButton';
 import type { CSSProperties } from 'react';
-import type { Settings } from '../types/game';
+import type { Settings, Topic } from '../types/game';
 import { useGame } from '../hooks/useGame';
 import { LetterWheel } from '../components/LetterWheel';
 import { Sparks } from '../components/Sparks';
@@ -8,14 +9,16 @@ import { GameOverModal } from '../components/GameOverModal';
 import { Modal } from '../components/Modal';
 export function GamePage({
   settings,
+  initialTopic,
   onSettings,
   onExit,
 }: {
   settings: Settings;
+  initialTopic?: Topic;
   onSettings: () => void;
   onExit: () => void;
 }) {
-  const game = useGame(settings),
+  const game = useGame(settings, initialTopic),
     { state, mood } = game;
   const over = ['bombExploded', 'thinkingTimeout', 'cleared'].includes(state.gameStatus);
   const penalty = game.penaltyVisible && !over;
@@ -107,6 +110,7 @@ export function GamePage({
           <button className="primary" onClick={game.resume}>
             继续游戏 <span>▶</span>
           </button>
+          <FullscreenButton />
           <button className="secondary" onClick={game.restart}>
             重新开始本轮
           </button>

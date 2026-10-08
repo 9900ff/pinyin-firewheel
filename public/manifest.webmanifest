@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "拼音风火轮",
+  "short_name": "拼音风火轮",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111310",
+  "theme_color": "#111310",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

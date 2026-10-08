@@ -2,19 +2,48 @@ import { useState } from 'react';
 import type { Settings, Difficulty } from '../types/game';
 import { TopicBankSelector } from '../components/TopicBankSelector';
 import { difficultyLetters, difficultyNames } from '../game/letters';
-import { isSettings } from '../utils/storage';
+import {
+  DEFAULT_SETTINGS,
+  isSettings,
+  THINKING_RANGE,
+  TIMEOUT_RANGE,
+  isThinkingTime,
+  isTimeoutLimit,
+} from '../utils/storage';
 export function SettingsPage({
   settings,
+  onChange,
   onBack,
   onStart,
 }: {
   settings: Settings;
+  onChange: (settings: Settings) => boolean;
   onBack: () => void;
   onStart: (s: Settings) => void;
 }) {
   const [draft, setDraft] = useState(settings);
+  const [customThinking, setCustomThinking] = useState(![5, 8, 10, 15].includes(settings.thinking));
+  const [customTimeout, setCustomTimeout] = useState(![1, 3, 5, 0].includes(settings.timeoutLimit));
+  const [saveState, setSaveState] = useState<'idle' | 'saved' | 'error'>('idle');
+  function persist(next: Settings) {
+    setSaveState(onChange(next) ? 'saved' : 'error');
+  }
   function update<K extends keyof Settings>(key: K, value: Settings[K]) {
-    setDraft((s) => ({ ...s, [key]: value }));
+    const next = { ...draft, [key]: value };
+    setDraft(next);
+    if (isSettings(next)) persist(next);
+    else {
+      // Keep independent valid changes even while a different field is being edited.
+      const validChange = { ...settings, [key]: value };
+      if (isSettings(validChange)) persist(validChange);
+    }
+  }
+  function reset() {
+    const defaults = { ...DEFAULT_SETTINGS, topicBanks: [...DEFAULT_SETTINGS.topicBanks] };
+    setDraft(defaults);
+    setCustomThinking(false);
+    setCustomTimeout(false);
+    persist(defaults);
   }
   const valid = isSettings(draft);
   return (
@@ -30,6 +59,23 @@ export function SettingsPage({
         游戏设置<span className="accent">.</span>
       </h1>
       <p className="muted">调整节奏，让每个人都心跳加速。</p>
+      <div className="settings-save-row">
+        <p
+          className={'settings-save-status ' + (saveState === 'error' || !valid ? 'error' : '')}
+          role="status"
+        >
+          {saveState === 'error'
+            ? '保存失败，修改仅在本次会话有效'
+            : !valid
+              ? '有效项已保留，请修正无效设置'
+              : saveState === 'saved'
+                ? '✓ 设置已自动保存'
+                : '设置修改后自动保存'}
+        </p>
+        <button type="button" className="reset-settings" onClick={reset}>
+          重置设置
+        </button>
+      </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -85,15 +131,51 @@ export function SettingsPage({
               <button
                 type="button"
                 key={n}
-                aria-pressed={draft.thinking === n}
-                className={draft.thinking === n ? 'selected' : ''}
-                onClick={() => update('thinking', n)}
+                aria-pressed={!customThinking && draft.thinking === n}
+                className={!customThinking && draft.thinking === n ? 'selected' : ''}
+                onClick={() => {
+                  setCustomThinking(false);
+                  update('thinking', n);
+                }}
               >
                 {n}
                 <small> 秒</small>
               </button>
             ))}
           </div>
+          <button
+            type="button"
+            className={'custom-option ' + (customThinking ? 'selected' : '')}
+            aria-pressed={customThinking}
+            aria-expanded={customThinking}
+            aria-controls="custom-thinking"
+            onClick={() => setCustomThinking(true)}
+          >
+            自定义思考时间
+          </button>
+          {customThinking && (
+            <div className="custom-number-field">
+              <label htmlFor="custom-thinking">思考时间（秒）</label>
+              <input
+                id="custom-thinking"
+                type="number"
+                inputMode="numeric"
+                min={THINKING_RANGE.min}
+                max={THINKING_RANGE.max}
+                step="1"
+                value={Number.isNaN(draft.thinking) ? '' : draft.thinking}
+                aria-invalid={!isThinkingTime(draft.thinking)}
+                aria-describedby="thinking-hint"
+                onChange={(e) => update('thinking', e.target.valueAsNumber)}
+              />
+              <p
+                id="thinking-hint"
+                className={'field-note ' + (!isThinkingTime(draft.thinking) ? 'error' : '')}
+              >
+                请输入 1–300 的整数，有效修改自动保存。
+              </p>
+            </div>
+          )}
           <p className="field-note">拍下有效字母，下一位的思考时间立即开始。</p>
         </section>
         <section className="setting-card">
@@ -103,14 +185,50 @@ export function SettingsPage({
               <button
                 key={n}
                 type="button"
-                aria-pressed={draft.timeoutLimit === n}
-                className={draft.timeoutLimit === n ? 'selected' : ''}
-                onClick={() => update('timeoutLimit', n)}
+                aria-pressed={!customTimeout && draft.timeoutLimit === n}
+                className={!customTimeout && draft.timeoutLimit === n ? 'selected' : ''}
+                onClick={() => {
+                  setCustomTimeout(false);
+                  update('timeoutLimit', n);
+                }}
               >
                 {n === 0 ? '不限' : n + ' 次'}
               </button>
             ))}
           </div>
+          <button
+            type="button"
+            className={'custom-option ' + (customTimeout ? 'selected' : '')}
+            aria-pressed={customTimeout}
+            aria-expanded={customTimeout}
+            aria-controls="custom-timeout"
+            onClick={() => setCustomTimeout(true)}
+          >
+            自定义超时上限
+          </button>
+          {customTimeout && (
+            <div className="custom-number-field">
+              <label htmlFor="custom-timeout">每轮超时上限（次）</label>
+              <input
+                id="custom-timeout"
+                type="number"
+                inputMode="numeric"
+                min={TIMEOUT_RANGE.min}
+                max={TIMEOUT_RANGE.max}
+                step="1"
+                value={Number.isNaN(draft.timeoutLimit) ? '' : draft.timeoutLimit}
+                aria-invalid={!isTimeoutLimit(draft.timeoutLimit)}
+                aria-describedby="timeout-hint"
+                onChange={(e) => update('timeoutLimit', e.target.valueAsNumber)}
+              />
+              <p
+                id="timeout-hint"
+                className={'field-note ' + (!isTimeoutLimit(draft.timeoutLimit) ? 'error' : '')}
+              >
+                请输入 1–99 的整数，0 表示不限。有效修改自动保存。
+              </p>
+            </div>
+          )}
           <p className="field-note">
             超时提醒处罚并换下一位；累计达到上限才结束本轮。炸弹始终继续。
           </p>
@@ -153,7 +271,7 @@ export function SettingsPage({
           ))}
         </section>
         <button className="primary" disabled={!valid} type="submit">
-          保存设置，开始游戏 <span>↗</span>
+          开始游戏 <span>↗</span>
         </button>
       </form>
       <p className="fine-print">个人倒计时公开 · 炸弹时间隐藏 · 设备放桌中央</p>

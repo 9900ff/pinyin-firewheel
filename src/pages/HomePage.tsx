@@ -1,11 +1,18 @@
+import { FullscreenButton } from '../components/FullscreenButton';
 import { BombIndicator } from '../components/BombIndicator';
 export function HomePage({ onQuick, onSettings }: { onQuick: () => void; onSettings: () => void }) {
   return (
     <main className="home page">
+      <div className="home-atmosphere" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </div>
       <header className="brand">
         <span className="brand-mark">风</span>
         <span>拼音风火轮</span>
-        <span className="edition">PARTY GAME / 01</span>
+        <span className="edition">PARTY / 01</span>
+        <FullscreenButton compact />
       </header>
       <div className="home-copy">
         <span className="eyebrow">

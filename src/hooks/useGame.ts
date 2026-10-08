@@ -6,8 +6,10 @@ import { atmosphere } from '../game/atmosphere';
 import { effectiveTime } from '../game/timing';
 import { audio } from '../utils/audio';
 import { vibrate } from '../utils/vibration';
-export function useGame(settings: Settings) {
-  const [engine] = useState(() => new GameEngine(settings));
+export function useGame(settings: Settings, initialTopic?: Topic) {
+  const [engine] = useState(
+    () => new GameEngine(settings, performance.now(), Math.random, initialTopic),
+  );
   const [state, setState] = useState(engine.state);
   const [mood, setMood] = useState(() => atmosphere(engine.state, performance.now()));
   const [penaltyVisible, setPenaltyVisible] = useState(false);

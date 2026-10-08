@@ -1222,3 +1222,395 @@ select {
   outline: 2px solid var(--lime);
   outline-offset: 2px;
 }
+
+.topic-preview {
+  display: flex;
+  flex-direction: column;
+}
+.preview-topic-card {
+  margin: auto 0;
+  padding: 50px 20px;
+  text-align: center;
+  border: 1px solid #505c37;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at top, #dcfa7014, #191e15 80%);
+}
+.preview-topic-card h1 {
+  font-size: clamp(27px, 8vw, 42px);
+  line-height: 1.4;
+  margin: 24px 0;
+  overflow-wrap: anywhere;
+}
+.preview-topic-card .chip {
+  display: inline-block;
+}
+.preview-actions {
+  padding-top: 24px;
+  padding-bottom: 12px;
+}
+.preview-actions .muted {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.topic-preview .page-header {
+  margin-bottom: 28px;
+}
+
+.settings-save-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+.settings-save-status {
+  font-size: 11px;
+  color: #a8bc80;
+  line-height: 1.6;
+}
+.settings-save-status.error {
+  color: #ffab86;
+}
+.reset-settings {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #485337;
+  border-radius: 9px;
+  background: #1b2116;
+  color: #d1d9c1;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.reset-settings:active {
+  background: #344027;
+}
+
+/* Keep settings navigation reachable while scrolling, including the iPhone safe area. */
+.settings {
+  padding-top: 0;
+}
+.settings > .page-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: calc(12px + env(safe-area-inset-top)) 0 12px;
+  background: rgba(17, 19, 16, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #343b2b;
+  box-shadow: 0 8px 16px #11131080;
+}
+
+/* Persistent, opt-in fullscreen control. Fullscreen targets the document, so page transitions preserve it. */
+:fullscreen {
+  background: #111310;
+}
+.fullscreen-control {
+  position: relative;
+}
+.fullscreen-compact {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.fullscreen-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid #4d583c;
+  border-radius: 10px;
+  background: #1b2118;
+  color: #d7e5b3;
+  font-size: 20px;
+}
+.fullscreen-short {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.fullscreen-button:disabled {
+  opacity: 0.55;
+}
+.fullscreen-help {
+  position: relative;
+  z-index: 15;
+  background: #20271a;
+  border: 1px solid #657345;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 10px;
+  color: #e0e8d1;
+  text-align: left;
+}
+.fullscreen-compact .fullscreen-help {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: min(310px, calc(100vw - 48px));
+  max-height: 65svh;
+  overflow: auto;
+  box-shadow: 0 12px 35px #0009;
+}
+.fullscreen-help p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.fullscreen-help button {
+  width: 100%;
+  min-height: 44px;
+  background: #d4ed85;
+  color: #222b11;
+  border-radius: 8px;
+}
+.home {
+  position: relative;
+  isolation: isolate;
+}
+.home-atmosphere {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+.home-atmosphere i {
+  position: absolute;
+  width: 95%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.24;
+  background: radial-gradient(circle, #9ab342, transparent 65%);
+  animation: home-drift 12s ease-in-out infinite alternate;
+  top: 10%;
+  left: -30%;
+}
+.home-atmosphere i:nth-child(2) {
+  top: 35%;
+  left: 35%;
+  background: radial-gradient(circle, #a34a25, transparent 65%);
+  animation-duration: 16s;
+  animation-delay: -7s;
+}
+.home-atmosphere i:nth-child(3) {
+  top: 65%;
+  left: -10%;
+  background: radial-gradient(circle, #586f34, transparent 65%);
+  animation-duration: 19s;
+  animation-delay: -12s;
+}
+.home .hero-letter {
+  animation: card-hover 4.5s ease-in-out infinite;
+  will-change: translate;
+}
+.home .hl-x {
+  animation-delay: -1.3s;
+  animation-duration: 5.3s;
+}
+.home .hl-l {
+  animation-delay: -2.4s;
+}
+.home .hl-c {
+  animation-delay: -0.7s;
+  animation-duration: 5.8s;
+}
+.home .hl-s {
+  animation-delay: -3.1s;
+}
+.home .hl-a {
+  animation-delay: -1.8s;
+  animation-duration: 6s;
+}
+.home .hero-track {
+  animation: track-orbit 45s linear infinite;
+}
+.home .brand .edition {
+  font-size: 8px;
+  letter-spacing: 0.6px;
+}
+.preview-card-stage {
+  position: relative;
+  margin: auto 0;
+  perspective: 900px;
+}
+.preview-card-back {
+  position: absolute;
+  inset: 8px 4px -8px;
+  transform: rotate(-3deg);
+  background: #343e25;
+  border: 1px solid #6c7d46;
+  border-radius: 24px;
+}
+.preview-card-stage .preview-topic-card {
+  position: relative;
+  margin: 0;
+  background: radial-gradient(ellipse at top, #303d20, #191e15 80%);
+}
+.preview-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin-top: 28px;
+  padding: 22px 0 max(12px, env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, #111310 22%);
+}
+.preview-button-row {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 12px;
+}
+.preview-button-row .primary,
+.preview-button-row .secondary {
+  margin: 0;
+  min-height: 62px;
+  padding: 14px 12px;
+}
+.refresh-topic {
+  border-color: #82994d;
+  background: #27311d;
+  font-size: 16px;
+}
+.refresh-topic > span {
+  font-size: 25px;
+}
+.refresh-topic:active {
+  transform: scale(0.96);
+}
+@keyframes home-drift {
+  from {
+    transform: translate(-8%, -4%) scale(0.9);
+    opacity: 0.17;
+  }
+  to {
+    transform: translate(20%, 12%) scale(1.3);
+    opacity: 0.32;
+  }
+}
+@keyframes card-hover {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -10px;
+  }
+}
+@keyframes track-orbit {
+  to {
+    transform: rotate(340deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home .hero-letter {
+    will-change: auto;
+  }
+}
+
+/* Fixed stage geometry: topic wrapping never moves the card or bottom controls. */
+.topic-preview {
+  overflow-x: clip;
+}
+.preview-card-stage {
+  height: clamp(300px, 42svh, 370px);
+  flex-shrink: 0;
+  isolation: isolate;
+}
+.preview-card-stage .preview-topic-card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 28px 22px;
+  display: grid;
+  grid-template-rows: 24px minmax(0, 1fr) 28px;
+  align-items: center;
+  justify-items: center;
+  backface-visibility: hidden;
+}
+.preview-card-stage .preview-topic-card h1 {
+  margin: 0;
+  font-size: clamp(26px, 7.5vw, 38px);
+  line-height: 1.35;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+}
+.topic-card-leave {
+  z-index: 2;
+  pointer-events: none;
+  animation: topic-fly-away 280ms cubic-bezier(0.4, 0, 0.8, 0.4) both;
+}
+.topic-card-arrive {
+  z-index: 1;
+  animation: topic-fly-in 300ms 140ms cubic-bezier(0.15, 0.8, 0.25, 1) both;
+}
+.refresh-topic:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+@keyframes topic-fly-away {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translate(-115%, -55px) rotate(-16deg) scale(0.92);
+  }
+}
+@keyframes topic-fly-in {
+  from {
+    opacity: 0;
+    transform: translate(100%, 35px) rotate(12deg) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .topic-card-leave {
+    display: none;
+  }
+}
+
+.custom-option {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #485538;
+  border-radius: 9px;
+  background: #141a11;
+  color: #c7d4b1;
+  font-size: 13px;
+}
+.custom-option.selected {
+  border-color: var(--lime);
+  color: var(--lime);
+  background: #dcfa7012;
+}
+.custom-number-field {
+  margin-top: 14px;
+}
+.custom-number-field label {
+  display: block;
+  font-size: 12px;
+  color: #c1cab2;
+  margin-bottom: 8px;
+}
+.custom-number-field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid #4d593c;
+  border-radius: 9px;
+  background: #10160d;
+  color: #f1f4e9;
+  font-size: 20px;
+}
+.custom-number-field input[aria-invalid='true'] {
+  border-color: #dd956d;
+}
