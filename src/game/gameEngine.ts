@@ -9,12 +9,25 @@ export class GameEngine {
     const activeLetters = difficultyLetters[settings.difficulty].filter(
       (l) => !currentTopic.disabledLetters?.includes(l),
     );
+    const bombDuration =
+      (settings.bombMin + random() * (settings.bombMax - settings.bombMin)) * 1000;
+    // Sample once per round. Both remaining-time conditions must be met.
+    const stageAt = (
+      ratioMin: number,
+      ratioMax: number,
+      secondsMin: number,
+      secondsMax: number,
+    ) => {
+      const ratio = ratioMin + random() * (ratioMax - ratioMin);
+      const remainingSeconds = secondsMin + random() * (secondsMax - secondsMin);
+      return 1 - Math.min(bombDuration * ratio, remainingSeconds * 1000) / bombDuration;
+    };
     this.state = {
       gameStatus: 'playing',
       usedLetters: [],
       currentTopic,
       bombStartTime: now,
-      bombDuration: (settings.bombMin + random() * (settings.bombMax - settings.bombMin)) * 1000,
+      bombDuration,
       turnStartTime: now,
       thinkingTimeLimit: settings.thinking * 1000,
       pausedAt: null,
@@ -25,8 +38,10 @@ export class GameEngine {
       timeoutLimit: settings.timeoutLimit,
       lastTimeoutAt: null,
       atmosphereCurve: 0.8 + random() * 0.6,
-      mechanicalAt: 0.4 + random() * 0.15,
-      alarmAt: 0.75 + random() * 0.12,
+      mechanicalAt: stageAt(0.6, 0.68, 32, 38),
+      sparksAt: stageAt(0.38, 0.46, 19, 25),
+      alarmAt: stageAt(0.26, 0.32, 14, 18),
+      extremeAt: stageAt(0.12, 0.16, 6, 8),
       effectSeed: random() * 10000,
     };
   }

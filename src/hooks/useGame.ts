@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Settings, Topic } from '../types/game';
 import { GameEngine } from '../game/gameEngine';
-import { pickTopic } from '../game/topicCatalog';
 import { atmosphere } from '../game/atmosphere';
 import { effectiveTime } from '../game/timing';
 import { audio } from '../utils/audio';
@@ -104,9 +103,5 @@ export function useGame(settings: Settings, initialTopic?: Topic) {
       sync();
     },
     restart: () => start(engine.state.currentTopic),
-    next: () => start(pickTopic(settings.topicBanks, Math.random, engine.state.currentTopic)),
-    redraw: () => {
-      start(pickTopic(settings.topicBanks, Math.random, engine.state.currentTopic));
-    },
   };
 }

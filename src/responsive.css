@@ -1,0 +1,519 @@
+/* Loaded last: shared responsive rules for all pages, including fullscreen and tablets. */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+.page {
+  min-height: 100dvh;
+  padding-left: max(20px, var(--safe-left));
+  padding-right: max(20px, var(--safe-right));
+}
+.page-header,
+.brand {
+  position: relative;
+  z-index: 5;
+  min-width: 0;
+}
+.page-header > span {
+  min-width: 0;
+}
+.home {
+  overflow: clip;
+}
+.home .brand {
+  flex-wrap: nowrap;
+}
+.home .brand > span:not(.edition) {
+  flex-shrink: 0;
+}
+.topic-preview {
+  gap: 0;
+}
+.preview-card-stage {
+  min-width: 0;
+}
+.preview-actions {
+  padding-bottom: 12px;
+}
+.preview-button-row > button {
+  min-width: 0;
+}
+.settings {
+  padding-top: 0;
+}
+.settings input {
+  scroll-margin-top: calc(100px + var(--safe-top));
+}
+.settings .setting-card {
+  min-width: 0;
+}
+.settings .segmented button {
+  min-width: 0;
+}
+.modal {
+  width: min(440px, calc(100vw - var(--safe-left) - var(--safe-right) - 24px));
+  max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.result-modal {
+  overflow-y: auto;
+}
+.fullscreen-compact .fullscreen-help {
+  max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 100px);
+}
+
+/* Size the board against both available width and height, rather than enforcing a minimum width. */
+.table-game {
+  max-width: 900px;
+  min-height: 100dvh;
+  padding: calc(10px + var(--safe-top)) max(10px, var(--safe-right)) calc(10px + var(--safe-bottom))
+    max(10px, var(--safe-left));
+}
+.table-toolbar {
+  flex-shrink: 0;
+  min-height: 44px;
+}
+.table-board {
+  min-width: 0;
+  min-height: 0;
+  margin: 8px auto;
+}
+.table-game .card-wheel {
+  width: min(100%, 680px, calc(100dvh - var(--safe-top) - var(--safe-bottom) - 200px));
+  max-width: 680px;
+}
+.table-footer {
+  flex-shrink: 0;
+}
+.table-notice {
+  min-height: 32px;
+  font-size: clamp(10px, 2.8vw, 13px);
+  line-height: 1.4;
+}
+.table-topic {
+  font-size: clamp(10px, 3.3cqw, 22px);
+  line-height: 1.2;
+}
+.turn-seconds {
+  font-size: clamp(24px, 8.5cqw, 58px);
+}
+.turn-seconds small {
+  font-size: clamp(8px, 2.3cqw, 14px);
+}
+.turn-caption {
+  font-size: clamp(8px, 2.3cqw, 13px);
+}
+.center-fuse {
+  font-size: clamp(10px, 3cqw, 19px);
+}
+
+@media (orientation: portrait) and (max-height: 740px) {
+  .home-copy {
+    margin-top: 16px;
+  }
+  .home h1 {
+    font-size: 48px;
+    line-height: 1.08;
+    margin: 10px 0;
+  }
+  .home .tagline {
+    font-size: 13px;
+  }
+  .home .hero-machine {
+    height: 205px;
+    margin-top: 8px;
+  }
+  .home .steps {
+    padding: 8px 0 12px;
+  }
+  .home .fine-print {
+    margin-top: 10px;
+  }
+  .topic-preview .page-header {
+    margin-bottom: 18px;
+  }
+  .preview-card-stage {
+    height: clamp(235px, 40dvh, 300px);
+  }
+  .preview-card-stage .preview-topic-card {
+    padding: 22px 18px;
+  }
+  .preview-actions {
+    margin-top: 18px;
+    padding-top: 14px;
+  }
+  .preview-actions .muted {
+    margin-bottom: 12px;
+  }
+  .preview-button-row .primary,
+  .preview-button-row .secondary {
+    min-height: 54px;
+  }
+}
+@media (min-width: 700px) {
+  .settings {
+    max-width: 960px;
+  }
+  .settings form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+  }
+  .settings form > .setting-card {
+    margin: 0;
+  }
+  .settings form > .topic-bank-section {
+    grid-column: 1/-1;
+  }
+  .settings .bank-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .settings form > .primary {
+    grid-column: 1/-1;
+    width: min(100%, 440px);
+    justify-self: center;
+  }
+  .topic-preview {
+    max-width: 620px;
+  }
+}
+
+@media (orientation: landscape) and (min-width: 560px) {
+  /* Home: title and floating cards side by side; large actions directly underneath. */
+  .home {
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 12px 24px;
+    padding-top: calc(12px + var(--safe-top));
+    padding-bottom: calc(12px + var(--safe-bottom));
+    align-items: center;
+  }
+  .home .brand {
+    grid-column: 1/-1;
+  }
+  .home-copy {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+  }
+  .home h1 {
+    font-size: clamp(36px, 6vw, 66px);
+    margin: 10px 0;
+    line-height: 1.08;
+  }
+  .home .title-spark {
+    font-size: 0.6em;
+    margin-left: 10px;
+  }
+  .home .tagline {
+    font-size: clamp(11px, 1.6vw, 15px);
+    line-height: 1.5;
+  }
+  .home .hero-machine {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: center;
+    width: min(100%, 300px);
+    height: clamp(155px, 42dvh, 272px);
+    margin: 0;
+  }
+  .home .hero-ring {
+    inset: 4% 12% 6%;
+  }
+  .home .hero-track {
+    inset: 12% 20% 14%;
+  }
+  .home .hero-letter {
+    width: clamp(36px, 7dvh, 53px);
+    height: clamp(39px, 8dvh, 56px);
+    font-size: clamp(18px, 4.5dvh, 25px);
+  }
+  .home .hl-b {
+    left: 18%;
+    top: 0;
+  }
+  .home .hl-x {
+    right: 12%;
+    top: 10%;
+  }
+  .home .hl-l {
+    left: 5%;
+    top: 43%;
+  }
+  .home .hl-c {
+    right: 2%;
+    top: 48%;
+  }
+  .home .hl-s {
+    left: 25%;
+    bottom: 8%;
+  }
+  .home .hl-a {
+    right: 20%;
+    bottom: 6%;
+  }
+  .home .core-preview {
+    width: clamp(74px, 23dvh, 120px);
+  }
+  .home .core-preview .bomb-icon {
+    min-width: 40px;
+    width: 52px;
+  }
+  .home .machine-caption {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+  .home-bottom {
+    grid-column: 1/-1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 16px;
+    margin: 0;
+  }
+  .home-bottom .steps {
+    display: none;
+  }
+  .home-bottom .primary,
+  .home-bottom .secondary {
+    margin: 0;
+    min-height: 50px;
+  }
+  .home-bottom .fine-print {
+    grid-column: 1/-1;
+    margin: 0;
+  }
+
+  /* Preview: a stable card on the left, reachable controls on the right. */
+  .topic-preview {
+    max-width: 1050px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    gap: 18px 32px;
+    padding-top: calc(10px + var(--safe-top));
+    padding-bottom: calc(16px + var(--safe-bottom));
+  }
+  .topic-preview .page-header {
+    grid-column: 1/-1;
+    margin: 0;
+  }
+  .preview-card-stage {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    height: clamp(185px, calc(100dvh - var(--safe-top) - var(--safe-bottom) - 106px), 430px);
+    margin: 0;
+  }
+  .preview-card-stage .preview-topic-card {
+    padding: 18px;
+    grid-template-rows: 20px minmax(0, 1fr) 24px;
+  }
+  .preview-card-stage .preview-topic-card h1 {
+    font-size: clamp(22px, 3.3vw, 38px);
+  }
+  .preview-actions {
+    grid-column: 2;
+    grid-row: 2;
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+  .preview-actions .muted {
+    margin-bottom: 20px;
+  }
+  .preview-button-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .preview-button-row .primary,
+  .preview-button-row .secondary {
+    min-height: 56px;
+  }
+
+  /* Table: use viewport height for the circle, keep tools and notices in side rails. */
+  .table-game {
+    max-width: 1280px;
+    display: grid;
+    grid-template-columns: clamp(94px, 14vw, 180px) minmax(0, 1fr) clamp(94px, 14vw, 180px);
+    align-items: center;
+    gap: 12px;
+  }
+  .table-toolbar {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0;
+  }
+  .table-counter {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+    font-size: 11px;
+  }
+  .table-board {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, 760px, calc(100dvh - var(--safe-top) - var(--safe-bottom) - 32px));
+    min-width: 0;
+    margin: 0 auto;
+    position: relative;
+  }
+  .table-game .card-wheel {
+    width: 100%;
+    max-width: none;
+  }
+  .table-footer {
+    grid-column: 3;
+    grid-row: 1;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 0;
+  }
+  .table-footer span {
+    font-size: 10px;
+  }
+  .table-board > .table-notice {
+    position: absolute;
+    width: clamp(90px, 13vw, 160px);
+    max-width: none;
+    right: calc(100% + 12px);
+    bottom: 0;
+    min-height: 0;
+    padding: 6px;
+    font-size: 10px;
+  }
+  .table-board > .notice-opposite {
+    right: auto;
+    left: calc(100% + 12px);
+    bottom: auto;
+    top: 0;
+  }
+  .settings {
+    max-width: 960px;
+  }
+  .settings > .page-header {
+    padding-top: calc(8px + var(--safe-top));
+    padding-bottom: 8px;
+  }
+  .settings h1 {
+    font-size: 28px;
+    margin-top: 16px;
+  }
+}
+@media (orientation: landscape) and (max-height: 420px) {
+  .home {
+    gap: 6px 20px;
+    padding-top: calc(8px + var(--safe-top));
+    padding-bottom: calc(8px + var(--safe-bottom));
+  }
+  .home h1 {
+    font-size: clamp(30px, 5.4vw, 44px);
+  }
+  .home-copy .eyebrow {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .home .hero-machine {
+    height: 145px;
+  }
+  .home .hero-letter {
+    width: 36px;
+    height: 39px;
+    font-size: 18px;
+  }
+  .home .core-preview {
+    width: 76px;
+  }
+  .home .core-dots {
+    display: none;
+  }
+  .home-bottom .primary,
+  .home-bottom .secondary {
+    min-height: 46px;
+    padding: 10px 14px;
+  }
+  .home-bottom .fine-print {
+    font-size: 8px;
+  }
+  .topic-preview {
+    gap: 12px 24px;
+  }
+  .preview-actions .muted {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+  .preview-button-row {
+    gap: 10px;
+  }
+  .preview-button-row .primary,
+  .preview-button-row .secondary {
+    min-height: 48px;
+    padding: 10px;
+  }
+  .table-game {
+    gap: 8px;
+  }
+  .table-toolbar {
+    gap: 12px;
+  }
+  .table-game .icon-button {
+    width: 44px;
+    height: 44px;
+  }
+  .table-footer {
+    font-size: 10px;
+  }
+  .modal {
+    padding: 16px;
+  }
+  .result-stamp {
+    width: 44px;
+    height: 44px;
+    font-size: 40px;
+    margin-bottom: 10px;
+  }
+  .result-modal h1 {
+    font-size: 36px;
+    margin: 10px 0;
+  }
+  .result-divider {
+    margin: 14px 0;
+  }
+  .modal h2 {
+    font-size: 22px;
+    margin: 10px 0;
+  }
+  .modal .primary {
+    margin-top: 14px;
+  }
+}
+@media (max-width: 359px) {
+  .page {
+    padding-left: max(14px, var(--safe-left));
+    padding-right: max(14px, var(--safe-right));
+  }
+  .home .edition {
+    display: none;
+  }
+  .topic-preview .page-header {
+    gap: 8px;
+    font-size: 11px;
+  }
+  .preview-button-row {
+    gap: 8px;
+  }
+  .preview-button-row button {
+    font-size: 13px;
+  }
+}

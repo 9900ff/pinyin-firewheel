@@ -20,6 +20,10 @@ export default function App() {
     setPreviewTopic(pickTopic(config.topicBanks));
     setPage('preview');
   }
+  function previewNext(previousTopic: Topic) {
+    setPreviewTopic(pickTopic(roundSettings.topicBanks, Math.random, previousTopic));
+    setPage('preview');
+  }
   function updateSettings(s: Settings): boolean {
     setSettings(s);
     const saved = saveSettings(s);
@@ -59,6 +63,7 @@ export default function App() {
         <GamePage
           settings={roundSettings}
           initialTopic={initialTopic}
+          onNext={previewNext}
           onSettings={() => setPage('settings')}
           onExit={() => setPage('home')}
         />

@@ -8,6 +8,7 @@ test('table renders both reading directions, public personal timer and only acti
   const html = renderToStaticMarkup(
     createElement(GamePage, {
       settings: { ...DEFAULT_SETTINGS, topicBanks: ['1'] },
+      onNext: () => {},
       onSettings: () => {},
       onExit: () => {},
     }),

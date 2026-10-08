@@ -41,8 +41,11 @@ export interface GameState {
   timeoutLimit: number;
   lastTimeoutAt: number | null;
   atmosphereCurve: number;
+  // Elapsed fractions derived from randomized remaining-time thresholds.
   mechanicalAt: number;
+  sparksAt: number;
   alarmAt: number;
+  extremeAt: number;
   effectSeed: number;
 }
 

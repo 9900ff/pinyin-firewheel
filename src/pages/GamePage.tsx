@@ -10,11 +10,13 @@ import { Modal } from '../components/Modal';
 export function GamePage({
   settings,
   initialTopic,
+  onNext,
   onSettings,
   onExit,
 }: {
   settings: Settings;
   initialTopic?: Topic;
+  onNext: (previousTopic: Topic) => void;
   onSettings: () => void;
   onExit: () => void;
 }) {
@@ -36,8 +38,8 @@ export function GamePage({
           '--pulse': mood.pulse,
           '--mechanical': mood.mechanical,
           '--alarm': mood.alarm,
-          '--shake-x': (state.gameStatus === 'playing' ? mood.shakeX : 0) + 'px',
-          '--shake-y': (state.gameStatus === 'playing' ? mood.shakeY : 0) + 'px',
+          '--shake-x': (state.gameStatus === 'playing' ? mood.shakeX : 0) + '%',
+          '--shake-y': (state.gameStatus === 'playing' ? mood.shakeY : 0) + '%',
           '--shake-angle': (state.gameStatus === 'playing' ? mood.shakeAngle : 0) + 'deg',
         } as CSSProperties
       }
@@ -114,8 +116,8 @@ export function GamePage({
           <button className="secondary" onClick={game.restart}>
             重新开始本轮
           </button>
-          <button className="secondary" onClick={game.redraw}>
-            重新抽题并开始新一轮
+          <button className="secondary" onClick={() => onNext(state.currentTopic)}>
+            选题并进入下一轮
           </button>
           <button className="secondary" onClick={onSettings}>
             返回设置
@@ -126,7 +128,11 @@ export function GamePage({
         </Modal>
       )}
       {over && (
-        <GameOverModal status={state.gameStatus} onNext={game.next} onSettings={onSettings} />
+        <GameOverModal
+          status={state.gameStatus}
+          onNext={() => onNext(state.currentTopic)}
+          onSettings={onSettings}
+        />
       )}
     </main>
   );

@@ -127,7 +127,7 @@ export function SettingsPage({
         <section className="setting-card">
           <div className="section-label">02 / 个人思考时间</div>
           <div className="segmented">
-            {[5, 8, 10, 15].map((n) => (
+            {[8, 10, 15, 20].map((n) => (
               <button
                 type="button"
                 key={n}

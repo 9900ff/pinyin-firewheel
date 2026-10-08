@@ -25,7 +25,7 @@ export function HomePage({ onQuick, onSettings }: { onQuick: () => void; onSetti
           </span>
         </h1>
         <p className="tagline">
-          围桌接力，<strong>别在你这位爆炸。</strong>
+          围桌接力，<strong>别在你手里爆炸。</strong>
         </p>
       </div>
       <div className="hero-machine" aria-hidden="true">

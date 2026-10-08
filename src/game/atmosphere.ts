@@ -7,6 +7,7 @@ export interface Atmosphere {
   ratio: number;
   pulse: number;
   beat: number;
+  // Translation in percent of the rendered board; rotation in degrees.
   shakeX: number;
   shakeY: number;
   shakeAngle: number;
@@ -19,30 +20,46 @@ export function atmosphere(s: GameState, now: number): Atmosphere {
   const clock = effectiveTime(s, now);
   const age = Math.max(0, Math.min(1, (clock - s.bombStartTime) / s.bombDuration));
   const seconds = s.bombDuration / 1000;
-  const exponent = 7.2 + (s.atmosphereCurve - 0.8) * 1.3;
-  const heat = 0.1 + 0.9 * Math.pow(age, 1.5);
-  // Integral of 1/0.9 + (10 - 1/0.9) * age^exponent: ~900ms to 100ms,
-  // with most acceleration near the end and no phase discontinuities.
-  const phase =
-    seconds * (age / 0.9 + ((10 - 1 / 0.9) * Math.pow(age, exponent + 1)) / (exponent + 1));
+  const exponent = 1.8 + (s.atmosphereCurve - 0.8);
+  // Integrate a continuous, nondecreasing tempo. The quiet opening lasts until
+  // mechanicalAt; later segments accelerate toward 100ms per beat at explosion.
+  const points = [0, s.mechanicalAt, s.sparksAt, s.alarmAt, s.extremeAt, 1];
+  const rates = [1 / 0.9, 1 / 0.9, 2, 3.5, 5, 10];
+  let phase = 0;
+  for (let i = 0; i < points.length - 1; i++) {
+    const width = points[i + 1] - points[i];
+    const elapsed = Math.max(0, Math.min(width, age - points[i]));
+    const progress = elapsed / width;
+    phase +=
+      seconds *
+      width *
+      (rates[i] * progress +
+        ((rates[i + 1] - rates[i]) * Math.pow(progress, exponent + 1)) / (exponent + 1));
+  }
   const beat = Math.floor(phase);
   const smooth = (start: number, end: number) => {
     const x = Math.max(0, Math.min(1, (age - start) / (end - start)));
     return x * x * (3 - 2 * x);
   };
-  const mechanical = smooth(s.mechanicalAt, s.mechanicalAt + 0.16);
-  const alarm = smooth(s.alarmAt, Math.min(0.98, s.alarmAt + 0.1));
-  // Sparks and ring tremor share the same randomized onset and growth curve.
-  const danger = smooth(s.alarmAt - 0.08, 1);
+  const mechanical = smooth(s.mechanicalAt, s.sparksAt);
+  const alarm = smooth(s.alarmAt, s.extremeAt);
+  // Sparks and the entire board grow together: small, pronounced, then extreme.
+  const danger =
+    0.35 * smooth(s.sparksAt, s.alarmAt) +
+    0.35 * smooth(s.alarmAt, s.extremeAt) +
+    0.3 * smooth(s.extremeAt, 1);
   const sparks = danger;
+  const heat = 0.1 + 0.2 * mechanical + 0.7 * danger;
   // Exactly the same phase as the sound. Small, smooth fog movements avoid full-screen flashes.
   const beatFraction = phase - beat;
   const pulse = (1 + Math.cos(beatFraction * Math.PI * 2)) / 2;
-  const amplitude = 4 * danger * danger;
-  const impact = Math.exp(-(phase - beat) * 6);
+  // Scale with the responsive board, including after rotation or fullscreen changes.
+  const shakeStrength = Math.pow(danger, 1.6);
+  const amplitude = 2.4 * shakeStrength;
+  const impact = Math.exp(-beatFraction * 4.5);
   const shakeX = amplitude * Math.cos(phase * Math.PI) * impact;
-  const shakeY = amplitude * 0.7 * Math.sin(phase * Math.PI * 2 + 0.5) * impact;
-  const shakeAngle = 0.5 * danger * danger * Math.cos(phase * Math.PI) * impact;
+  const shakeY = amplitude * 0.8 * Math.sin(phase * Math.PI * 2 + 0.5) * impact;
+  const shakeAngle = 1.4 * shakeStrength * Math.cos(phase * Math.PI) * impact;
   const remaining = Math.max(0, s.turnStartTime + s.thinkingTimeLimit - clock);
   return {
     heat,

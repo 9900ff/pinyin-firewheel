@@ -311,69 +311,6 @@
     font-size: 15px;
   }
 }
-@media (orientation: landscape) and (max-height: 600px) {
-  .table-game {
-    max-width: 1100px;
-    display: grid;
-    grid-template-columns: minmax(100px, 1fr) auto minmax(100px, 1fr);
-    align-items: center;
-    column-gap: 8px;
-  }
-  .table-toolbar {
-    flex-direction: column;
-    gap: 20px;
-    padding: 0 4px;
-  }
-  .table-counter {
-    flex-direction: column;
-    gap: 5px;
-  }
-  .table-board {
-    width: calc(100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-    min-width: 304px;
-    margin: 0;
-    position: relative;
-  }
-  .card-wheel {
-    --card-width: clamp(36px, 11svh, 58px);
-  }
-  .table-notice {
-    position: absolute;
-    right: calc(100% + 8px);
-    bottom: 0;
-    width: 110px;
-    max-width: none;
-    font-size: 9px;
-  }
-  .notice-opposite {
-    right: auto;
-    left: calc(100% + 8px);
-    top: 0;
-    bottom: auto;
-  }
-  .table-footer {
-    font-size: 10px;
-    padding: 0 5px;
-  }
-  .table-footer span {
-    font-size: 9px;
-  }
-  .table-topic {
-    font-size: clamp(8px, 2.7svh, 13px);
-  }
-  .turn-seconds {
-    font-size: clamp(21px, 7svh, 34px);
-  }
-  .turn-caption {
-    font-size: clamp(6px, 1.9svh, 9px);
-  }
-  .center-fuse {
-    font-size: 10px;
-  }
-  .card-letter {
-    font-size: clamp(15px, 4.5svh, 24px);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .table-ambience::after {
     box-shadow: none;
@@ -392,9 +329,9 @@
   }
 }
 
-/* Shake the complete board once, including its center and particles. */
+/* Percent translation scales with the complete board, including center and particles. */
 .card-wheel {
-  transform: translate(var(--shake-x, 0px), var(--shake-y, 0px)) rotate(var(--shake-angle, 0deg));
+  transform: translate(var(--shake-x, 0%), var(--shake-y, 0%)) rotate(var(--shake-angle, 0deg));
   transform-origin: 50% 50%;
   will-change: transform;
 }
