@@ -4,7 +4,7 @@ export const STORAGE_KEY = 'pinyin-firewheel:settings:v1';
 export const DEFAULT_SETTINGS: Settings = {
   bombMin: 30,
   bombMax: 90,
-  thinking: 8,
+  thinking: 15,
   timeoutLimit: 3,
   topicBanks: [...DEFAULT_TOPIC_BANKS],
   difficulty: 'standard',

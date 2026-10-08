@@ -517,3 +517,53 @@
     font-size: 13px;
   }
 }
+
+/* Keep quick bank selection reachable without changing the topic-card geometry. */
+.preview-bank-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #485538;
+  border-radius: 10px;
+  background: #1b2317;
+  text-align: left;
+  font-size: 13px;
+}
+.preview-bank-button > span:first-child {
+  flex-shrink: 0;
+  color: var(--lime);
+}
+.preview-bank-button small {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #b6c0a6;
+}
+.preview-bank-button:disabled {
+  opacity: 0.55;
+}
+.preview-banks-modal .bank-list {
+  margin-top: 16px;
+  text-align: left;
+}
+.preview-banks-modal .bank-choice {
+  min-height: 64px;
+}
+.preview-banks-modal input {
+  accent-color: var(--lime);
+  flex-shrink: 0;
+}
+.preview-banks-modal input:disabled {
+  opacity: 0.65;
+}
+.preview-banks-modal > .primary {
+  position: sticky;
+  bottom: 0;
+  margin-top: 16px;
+}

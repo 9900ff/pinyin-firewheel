@@ -4,7 +4,11 @@ import { GameEngine } from '../src/game/gameEngine';
 import { DEFAULT_SETTINGS, loadSettings, STORAGE_KEY } from '../src/utils/storage';
 import { atmosphere } from '../src/game/atmosphere';
 const make = (limit = 3) =>
-  new GameEngine({ ...DEFAULT_SETTINGS, topicBanks: ['1'], timeoutLimit: limit }, 0, () => 0.5);
+  new GameEngine(
+    { ...DEFAULT_SETTINGS, thinking: 8, topicBanks: ['1'], timeoutLimit: limit },
+    0,
+    () => 0.5,
+  );
 test('personal timeout hands off until round limit; an expired tap is rejected', () => {
   const e = make();
   assert.equal(e.press('X', 8000), false);

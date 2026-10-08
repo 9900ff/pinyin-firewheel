@@ -30,6 +30,12 @@ export default function App() {
     setNotice(saved ? '' : '浏览器无法保存设置，本次会话仍会使用你的修改。');
     return saved;
   }
+  function changePreviewBanks(ids: string[]) {
+    if (!ids.length) return;
+    setRoundSettings((current) => ({ ...current, topicBanks: [...ids] }));
+    updateSettings({ ...settings, topicBanks: [...ids] });
+    setPreviewTopic((current) => pickTopic(ids, Math.random, current ?? undefined));
+  }
   function start(s: Settings, topic?: Topic) {
     if (s.sound) audio.unlock();
     setRoundSettings({ ...s });
@@ -44,6 +50,8 @@ export default function App() {
       ) : page === 'preview' && previewTopic ? (
         <TopicPreviewPage
           topic={previewTopic}
+          selectedBanks={roundSettings.topicBanks}
+          onBanksChange={changePreviewBanks}
           onConfirm={() => start(roundSettings, previewTopic)}
           onRefresh={() =>
             setPreviewTopic((current) =>

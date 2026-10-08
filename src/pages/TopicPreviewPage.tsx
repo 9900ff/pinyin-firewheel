@@ -1,18 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Topic } from '../types/game';
 import { topicBanks, topicKey } from '../game/topicCatalog';
+import { Modal } from '../components/Modal';
 import { FullscreenButton } from '../components/FullscreenButton';
 export function TopicPreviewPage({
   topic,
+  selectedBanks,
+  onBanksChange,
   onConfirm,
   onRefresh,
   onBack,
 }: {
   topic: Topic;
+  selectedBanks: string[];
+  onBanksChange: (ids: string[]) => void;
   onConfirm: () => void;
   onRefresh: () => void;
   onBack: () => void;
 }) {
+  const [choosingBanks, setChoosingBanks] = useState(false);
   const [outgoing, setOutgoing] = useState<Topic | null>(null);
   const locked = useRef(false);
   const changing = outgoing !== null;
@@ -72,6 +78,21 @@ export function TopicPreviewPage({
         {outgoing && card(outgoing, true)}
       </div>
       <div className="preview-actions">
+        <button
+          className="preview-bank-button"
+          disabled={changing}
+          aria-haspopup="dialog"
+          onClick={() => setChoosingBanks(true)}
+        >
+          <span>切换题库</span>
+          <small>
+            {topicBanks
+              .filter((bank) => selectedBanks.includes(bank.id))
+              .map((bank) => bank.name)
+              .join('、')}
+          </small>
+          <span aria-hidden="true">›</span>
+        </button>
         <p className="muted">
           大家看好题目，准备好了再开始。
           <br />
@@ -92,6 +113,46 @@ export function TopicPreviewPage({
           </button>
         </div>
       </div>
+      {choosingBanks && (
+        <Modal titleId="preview-banks-title" className="preview-banks-modal">
+          <h2 id="preview-banks-title">选择题库</h2>
+          <p className="muted">可多选，修改自动保存并重新抽题，至少保留一个。</p>
+          <div className="bank-list">
+            {topicBanks.map((bank) => {
+              const checked = selectedBanks.includes(bank.id);
+              return (
+                <label
+                  key={bank.id}
+                  className={'bank-card bank-choice ' + (checked ? 'bank-selected' : '')}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    disabled={checked && selectedBanks.length === 1}
+                    onChange={() =>
+                      onBanksChange(
+                        checked
+                          ? selectedBanks.filter((id) => id !== bank.id)
+                          : [...selectedBanks, bank.id],
+                      )
+                    }
+                  />
+                  <span className="bank-copy">
+                    <span className="bank-title">
+                      {bank.name}
+                      {bank.adultOnly && <span className="adult-badge">18+</span>}
+                    </span>
+                    <span className="bank-description">{bank.description}</span>
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+          <button className="primary" onClick={() => setChoosingBanks(false)}>
+            返回抽签
+          </button>
+        </Modal>
+      )}
     </main>
   );
 }
